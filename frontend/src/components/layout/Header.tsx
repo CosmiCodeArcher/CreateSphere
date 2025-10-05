@@ -2,10 +2,11 @@ import { Link, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Rocket, Wallet } from "lucide-react";
 import { useState } from "react";
+import { useWeb3 } from "@/hooks/useWeb3";
 
 export const Header = () => {
   const location = useLocation();
-  const [isWalletConnected, setIsWalletConnected] = useState(false);
+  const { connect, disconnect, account, isConnected } = useWeb3();
 
   const isActive = (path: string) => location.pathname === path;
 
@@ -48,17 +49,17 @@ export const Header = () => {
           </nav>
 
           <div className="flex items-center gap-3">
-            {isWalletConnected ? (
-              <Button variant="glass" size="sm" className="gap-2">
+            {isConnected ? (
+              <Button variant="glass" size="sm" className="gap-2" onClick={disconnect}>
                 <Wallet className="h-4 w-4" />
-                <span className="hidden sm:inline">0x1234...5678</span>
+                <span className="hidden sm:inline">{`${account?.slice(0, 6)}...${account?.slice(-4)}`}</span>
               </Button>
             ) : (
               <Button 
                 variant="gradient" 
                 size="sm" 
                 className="gap-2"
-                onClick={() => setIsWalletConnected(true)}
+                onClick={connect}
               >
                 <Wallet className="h-4 w-4" />
                 <span className="hidden sm:inline">Connect Wallet</span>
